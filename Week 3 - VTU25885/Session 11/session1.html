@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>College Management - Semester Result Portal</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #74ebd5, #9face6);
+}
+
+/* ===== Layout ===== */
+.wrapper {
+    display: flex;
+}
+
+/* ===== Sidebar ===== */
+aside {
+    width: 220px;
+    background: #1a237e;
+    color: white;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+aside h2 {
+    text-align: center;
+}
+
+aside a {
+    display: block;
+    color: white;
+    text-decoration: none;
+    margin: 10px 0;
+}
+
+/* ===== Main Content ===== */
+.main {
+    flex: 1;
+}
+
+/* ===== Header ===== */
+header {
+    background: linear-gradient(to right, #2c3e50, #4ca1af);
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+/* ===== Container ===== */
+.container {
+    width: 60%;
+    margin: 30px auto;
+    background: rgba(255,255,255,0.95);
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+/* ===== Form ===== */
+label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+input, select {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+}
+
+button {
+    margin-top: 20px;
+    width: 100%;
+    padding: 10px;
+    background-color: #2980b9;
+    color: white;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+/* ===== Table ===== */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    display: none;
+}
+
+th, td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: center;
+}
+
+th {
+    background-color: #ecf0f1;
+}
+
+/* ===== Media Section ===== */
+.media {
+    margin-top: 30px;
+}
+
+video, audio {
+    width: 100%;
+    margin-top: 10px;
+}
+
+/* ===== Footer ===== */
+footer {
+    text-align: center;
+    padding: 15px;
+    background: #2c3e50;
+    color: white;
+}
+</style>
+</head>
+
+<body>
+
+<div class="wrapper">
+
+<!-- Sidebar -->
+<aside>
+    <h2>CMS</h2>
+    <a href="#">Dashboard</a>
+    <a href="#">Results</a>
+    <a href="#">Media</a>
+    <a href="#">Support</a>
+</aside>
+
+<!-- Main Area -->
+<div class="main">
+
+<header>
+    <h1>College Management System</h1>
+    <p>Semester Result Portal</p>
+</header>
+
+<div class="container">
+
+<h2 style="text-align:center;">Check Your Semester Result</h2>
+
+<label>Student ID</label>
+<input type="number" id="studentId" placeholder="Enter Student ID">
+
+<label>Semester</label>
+<select id="semester">
+    <option value="">Select Semester</option>
+    <option value="1">Semester 1</option>
+    <option value="2">Semester 2</option>
+    <option value="3">Semester 3</option>
+</select>
+
+<button onclick="showResult()">View Result</button>
+
+<!-- Filter (Session 3) -->
+<label style="margin-top:20px;">Filter by Status</label>
+<select id="statusFilter" onchange="filterResults()">
+    <option value="all">All</option>
+    <option value="Pass">Pass</option>
+    <option value="Fail">Fail</option>
+</select>
+
+<table id="resultTable">
+<tr>
+    <th>Subject</th>
+    <th>Marks</th>
+    <th>Grade</th>
+    <th>Status</th>
+</tr>
+<tbody id="resultBody"></tbody>
+</table>
+
+<!-- Media (Session 2) -->
+<div class="media">
+    <h3>College Introduction</h3>
+    <video controls>
+        <source src="college.mp4" type="video/mp4">
+    </video>
+
+    <h3>Principal Announcement</h3>
+    <audio controls>
+        <source src="announcement.mp3" type="audio/mpeg">
+    </audio>
+</div>
+
+</div>
+
+<footer>
+    © 2026 College Management System
+</footer>
+
+</div>
+</div>
+
+<script>
+const semesterSubjects = {
+    1: ["Mathematics", "Physics", "Programming"],
+    2: ["Data Structures", "DBMS", "Operating Systems"],
+    3: ["Java", "Computer Networks", "Software Engineering"]
+};
+
+function showResult() {
+    const id = document.getElementById("studentId").value;
+    const sem = document.getElementById("semester").value;
+    const table = document.getElementById("resultTable");
+    const body = document.getElementById("resultBody");
+
+    body.innerHTML = "";
+
+    if (id === "" || sem === "") {
+        alert("Please enter Student ID and Semester");
+        return;
+    }
+
+    const subjects = semesterSubjects[sem];
+
+    subjects.forEach((sub, index) => {
+        const marks = (parseInt(id) * (index + 3) + parseInt(sem) * 7) % 100;
+        const finalMarks = marks < 40 ? marks + 40 : marks;
+        const grade = finalMarks >= 80 ? "A" :
+                      finalMarks >= 70 ? "B" : "C";
+        const status = finalMarks >= 40 ? "Pass" : "Fail";
+
+        body.innerHTML += `
+        <tr>
+            <td>${sub}</td>
+            <td>${finalMarks}</td>
+            <td>${grade}</td>
+            <td>${status}</td>
+        </tr>`;
+    });
+
+    table.style.display = "table";
+}
+
+function filterResults() {
+    const filter = document.getElementById("statusFilter").value;
+    const rows = document.querySelectorAll("#resultBody tr");
+
+    rows.forEach(row => {
+        const status = row.cells[3].innerText;
+        if (filter === "all" || status === filter) {
+            row.style.display = "";
+        } else {
+            row.style.display = "none";
+        }
+    });
+}
+</script>
+
+</body>
+</html>

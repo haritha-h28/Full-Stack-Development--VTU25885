@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Session 15 - Keyboard & Mouse Events</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            overflow: hidden;
+            transition: background 0.3s ease;
+        }
+
+        /* Movable Box */
+        #box {
+            width: 80px;
+            height: 80px;
+            background-color: red;
+            position: absolute;
+            top: 200px;
+            left: 200px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Use Arrow Keys to Move the Box</h2>
+<div id="box"></div>
+
+<script>
+    /* ===============================
+       1️⃣ Keyboard Movement
+    =============================== */
+
+    const box = document.getElementById("box");
+    let positionX = 200;
+    let positionY = 200;
+    const step = 20;
+
+    document.addEventListener("keydown", (event) => {
+        switch (event.key) {
+            case "ArrowUp":
+                positionY -= step;
+                break;
+            case "ArrowDown":
+                positionY += step;
+                break;
+            case "ArrowLeft":
+                positionX -= step;
+                break;
+            case "ArrowRight":
+                positionX += step;
+                break;
+        }
+
+        box.style.top = positionY + "px";
+        box.style.left = positionX + "px";
+    });
+
+
+    /* ===============================
+       2️⃣ Mouse Quadrant Detection
+    =============================== */
+
+    document.addEventListener("mousemove", (event) => {
+        const x = event.clientX;
+        const y = event.clientY;
+
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+
+        // Quadrant Logic
+        if (x < width / 2 && y < height / 2) {
+            document.body.style.backgroundColor = "#FFCCCC"; // Top Left
+        } 
+        else if (x >= width / 2 && y < height / 2) {
+            document.body.style.backgroundColor = "#CCFFCC"; // Top Right
+        } 
+        else if (x < width / 2 && y >= height / 2) {
+            document.body.style.backgroundColor = "#CCCCFF"; // Bottom Left
+        } 
+        else {
+            document.body.style.backgroundColor = "#FFFFCC"; // Bottom Right
+        }
+    });
+
+</script>
+
+</body>
+</html>

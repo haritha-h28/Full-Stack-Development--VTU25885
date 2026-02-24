@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ES6 Features Implementation</title>
+</head>
+<body>
+
+<h2>Open Console to See Output</h2>
+
+<script>
+
+/* =====================================================
+1️⃣ State Management using let & const (Match Score)
+===================================================== */
+
+console.log("---- Match Score Update ----");
+
+let teamAScore = 0;   // block scoped
+let teamBScore = 0;
+
+function updateScore(team, points) {
+    if (team === "A") {
+        teamAScore += points;
+    } else {
+        teamBScore += points;
+    }
+
+    console.log(`Score Update → Team A: ${teamAScore}, Team B: ${teamBScore}`);
+}
+
+updateScore("A", 4);
+updateScore("B", 6);
+updateScore("A", 2);
+
+
+/* =====================================================
+2️⃣ Arrow Function + Template Literals
+===================================================== */
+
+console.log("---- Receipt Generator ----");
+
+const generateReceipt = (price, tip) => {
+    const total = price + tip;
+    console.log(`Receipt:
+    Price: ₹${price}
+    Tip: ₹${tip}
+    Total Amount: ₹${total}`);
+};
+
+generateReceipt(500, 50);
+
+
+/* =====================================================
+3️⃣ Object & Array Destructuring
+===================================================== */
+
+console.log("---- Destructuring Example ----");
+
+const student = {
+    name: "Haritha",
+    age: 20,
+    department: "CSE",
+    address: {
+        city: "Chennai",
+        pincode: 600001
+    }
+};
+
+// Object destructuring
+const { name, department, address: { city } } = student;
+
+console.log(`Name: ${name}, Department: ${department}, City: ${city}`);
+
+const marks = [85, 90, 95];
+
+// Array destructuring
+const [math, science, english] = marks;
+
+console.log(`Math: ${math}, Science: ${science}, English: ${english}`);
+
+
+/* =====================================================
+4️⃣ Spread & Rest Operators
+===================================================== */
+
+console.log("---- Spread Operator ----");
+
+const collegeFriends = ["Anu", "Priya"];
+const workFriends = ["Rahul", "Kiran"];
+
+// Spread operator + add "Me" at start
+const partyList = ["Me", ...collegeFriends, ...workFriends];
+
+console.log("Party List:", partyList);
+
+
+// Rest Operator Example
+console.log("---- Rest Operator ----");
+
+function showGuests(firstGuest, ...otherGuests) {
+    console.log(`Main Guest: ${firstGuest}`);
+    console.log("Other Guests:", otherGuests);
+}
+
+showGuests("Haritha", "Anu", "Priya", "Rahul");
+
+
+/* =====================================================
+5️⃣ Promise – Pizza Ordering System
+===================================================== */
+
+console.log("---- Pizza Ordering System ----");
+
+function orderPizza() {
+    return new Promise((resolve, reject) => {
+
+        const pizzaReady = true; // change to false to test reject
+
+        setTimeout(() => {
+            if (pizzaReady) {
+                resolve("🍕 Pizza delivered successfully!");
+            } else {
+                reject("❌ Sorry, pizza could not be delivered.");
+            }
+        }, 2000);
+
+    });
+}
+
+orderPizza()
+    .then(message => console.log(message))
+    .catch(error => console.log(error));
+
+</script>
+
+</body>
+</html>

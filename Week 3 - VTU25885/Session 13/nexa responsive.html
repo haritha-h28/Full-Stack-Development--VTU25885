@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEXA 2026 - Responsive Registration</title>
+
+<style>
+
+/* ========== GLOBAL STYLES ========== */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f6f9;
+}
+
+/* ========== HEADER ========== */
+
+header {
+    background: linear-gradient(135deg, #0f172a, #2563eb);
+    color: white;
+    text-align: center;
+    padding: 2rem 1rem;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 2rem;
+}
+
+/* ========== MAIN LAYOUT USING FLEXBOX ========== */
+
+main {
+    display: flex;
+    justify-content: center;
+    padding: 2rem 1rem;
+}
+
+/* ========== FORM CONTAINER ========== */
+
+.form-container {
+    background: white;
+    width: 100%;
+    max-width: 600px;   /* Fluid with limit */
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+
+h2 {
+    text-align: center;
+    color: #2563eb;
+}
+
+/* ========== GRID SYSTEM INSIDE FORM ========== */
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Two-column layout */
+    gap: 1rem;
+}
+
+/* Full width fields */
+.full-width {
+    grid-column: span 2;
+}
+
+label {
+    font-weight: bold;
+    display: block;
+    margin-top: 10px;
+}
+
+input, select, textarea {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+/* Inline radio & checkbox */
+.inline-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 5px;
+}
+
+button {
+    margin-top: 20px;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background: #2563eb;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #1e40af;
+}
+
+/* ========== MEDIA QUERIES ========== */
+
+/* Tablet */
+@media (max-width: 768px) {
+    .form-grid {
+        grid-template-columns: 1fr;  /* Switch to single column */
+    }
+
+    .full-width {
+        grid-column: span 1;
+    }
+
+    header h1 {
+        font-size: 1.6rem;
+    }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+    header {
+        padding: 1.5rem 1rem;
+    }
+
+    .form-container {
+        padding: 1.2rem;
+    }
+
+    button {
+        width: 100%;
+    }
+}
+
+footer {
+    text-align: center;
+    padding: 1rem;
+    background: #0f172a;
+    color: white;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>NEXA 2026</h1>
+    <p>Innovate • Create • Elevate</p>
+</header>
+
+<main>
+    <div class="form-container">
+        <h2>Event Registration</h2>
+
+        <form class="form-grid">
+
+            <div class="full-width">
+                <label>Full Name *</label>
+                <input type="text" placeholder="Enter your full name" required>
+            </div>
+
+            <div>
+                <label>Email *</label>
+                <input type="email" placeholder="example@gmail.com" required>
+            </div>
+
+            <div>
+                <label>Category *</label>
+                <select required>
+                    <option value="">Select Category</option>
+                    <option>Individual</option>
+                    <option>Team</option>
+                    <option>Audience</option>
+                </select>
+            </div>
+
+            <div class="full-width">
+                <label>T-Shirt Size</label>
+                <div class="inline-options">
+                    <label><input type="radio" name="size"> S</label>
+                    <label><input type="radio" name="size"> M</label>
+                    <label><input type="radio" name="size"> L</label>
+                    <label><input type="radio" name="size"> XL</label>
+                </div>
+            </div>
+
+            <div class="full-width">
+                <label>Technical Interests</label>
+                <div class="inline-options">
+                    <label><input type="checkbox"> AI</label>
+                    <label><input type="checkbox"> Web Dev</label>
+                    <label><input type="checkbox"> Cloud</label>
+                </div>
+            </div>
+
+            <div class="full-width">
+                <label>Expectations (Max 200 characters)</label>
+                <textarea rows="4" maxlength="200"
+                          placeholder="Share your expectations..."></textarea>
+            </div>
+
+            <div class="full-width">
+                <button type="submit">Register</button>
+            </div>
+
+        </form>
+    </div>
+</main>
+
+<footer>
+    © 2026 NEXA Event | Responsive Design Implementation
+</footer>
+
+</body>
+</html>

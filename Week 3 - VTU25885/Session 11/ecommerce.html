@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>E-Commerce Platform</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            background-color: #f4f6f9;
+        }
+
+        /* Sidebar Filter */
+        .filters {
+            width: 250px;
+            background: #1e3a8a;
+            color: white;
+            padding: 20px;
+        }
+
+        .filters h2 {
+            margin-top: 0;
+        }
+
+        .filters label {
+            display: block;
+            margin: 8px 0;
+        }
+
+        /* Product Section */
+        .products {
+            flex: 1;
+            padding: 20px;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .product {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        .product h3 {
+            margin: 5px 0;
+        }
+
+        .rating {
+            color: orange;
+        }
+
+        button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 8px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- FILTER SIDEBAR -->
+<div class="filters">
+    <h2>Filters</h2>
+
+    <h3>Price Range</h3>
+    <label>Min: <input type="number" id="minPrice" value="0"></label>
+    <label>Max: <input type="number" id="maxPrice" value="2000"></label>
+
+    <h3>Color</h3>
+    <label><input type="checkbox" value="Red" class="color"> Red</label>
+    <label><input type="checkbox" value="Blue" class="color"> Blue</label>
+    <label><input type="checkbox" value="Black" class="color"> Black</label>
+
+    <h3>Brand</h3>
+    <label><input type="checkbox" value="Nike" class="brand"> Nike</label>
+    <label><input type="checkbox" value="Adidas" class="brand"> Adidas</label>
+    <label><input type="checkbox" value="Puma" class="brand"> Puma</label>
+
+    <h3>Customer Rating</h3>
+    <label><input type="radio" name="rating" value="4"> 4★ & above</label>
+    <label><input type="radio" name="rating" value="3"> 3★ & above</label>
+    <label><input type="radio" name="rating" value="0" checked> All</label>
+
+    <br><br>
+    <button onclick="applyFilters()">Apply Filters</button>
+</div>
+
+<!-- PRODUCTS SECTION -->
+<div class="products">
+    <h1>Product List</h1>
+    <div class="product-grid" id="productGrid">
+    </div>
+</div>
+
+<script>
+    const products = [
+        {name:"Nike Shoes", price:1500, color:"Red", brand:"Nike", rating:4},
+        {name:"Adidas T-Shirt", price:900, color:"Blue", brand:"Adidas", rating:5},
+        {name:"Puma Jacket", price:1800, color:"Black", brand:"Puma", rating:3},
+        {name:"Nike Cap", price:600, color:"Black", brand:"Nike", rating:4},
+        {name:"Adidas Shorts", price:700, color:"Red", brand:"Adidas", rating:2}
+    ];
+
+    function displayProducts(filteredProducts) {
+        const grid = document.getElementById("productGrid");
+        grid.innerHTML = "";
+
+        filteredProducts.forEach(product => {
+            grid.innerHTML += `
+                <div class="product">
+                    <h3>${product.name}</h3>
+                    <p>Price: ₹${product.price}</p>
+                    <p>Color: ${product.color}</p>
+                    <p>Brand: ${product.brand}</p>
+                    <p class="rating">Rating: ${product.rating} ★</p>
+                </div>
+            `;
+        });
+    }
+
+    function applyFilters() {
+        let min = parseInt(document.getElementById("minPrice").value);
+        let max = parseInt(document.getElementById("maxPrice").value);
+
+        let selectedColors = [...document.querySelectorAll(".color:checked")].map(c => c.value);
+        let selectedBrands = [...document.querySelectorAll(".brand:checked")].map(b => b.value);
+
+        let rating = parseInt(document.querySelector("input[name='rating']:checked").value);
+
+        let filtered = products.filter(p => {
+            return p.price >= min &&
+                   p.price <= max &&
+                   (selectedColors.length === 0 || selectedColors.includes(p.color)) &&
+                   (selectedBrands.length === 0 || selectedBrands.includes(p.brand)) &&
+                   p.rating >= rating;
+        });
+
+        displayProducts(filtered);
+    }
+
+    displayProducts(products);
+</script>
+
+</body>
+</html>
