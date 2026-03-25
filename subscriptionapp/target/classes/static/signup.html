@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account - SubSphere</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            /* Inheriting light theme */
+        }
+        .navbar {
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border);
+        }
+        .navbar .brand { color: var(--text-main); }
+        .login-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 40px;
+            color: var(--text-main);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        }
+        .form-control {
+            background: #f9fafb;
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 14px 16px;
+            border-radius: 8px;
+        }
+        .form-control:focus {
+            background: #ffffff;
+            border-color: var(--primary);
+        }
+        .form-group label {
+            color: var(--text-muted);
+            margin-bottom: 10px;
+        }
+        .brand-text { color: var(--text-main) !important; }
+        select.form-control option { background: #ffffff; color: var(--text-main); }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="brand">
+            <i class="fa-solid fa-heart" style="color: var(--primary)"></i>
+            Sub<span>Sphere</span>
+        </div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="features.html">Plans</a>
+            <a href="login.html">Login</a>
+            <a href="signup.html" style="color: var(--primary);">Sign Up</a>
+        </div>
+    </nav>
+
+    <div class="login-container" style="flex: 1; display:flex; align-items:center; padding: 40px 20px;">
+        <div class="card login-card">
+            <div class="login-header">
+                <a href="index.html" style="text-decoration: none; display: flex; align-items: center; justify-content: center;">
+                    <i class="fa-solid fa-heart logo-icon"></i>
+                    <h2 class="brand-text" style="color: var(--text-main); margin:0;">Sub<span style="color: var(--primary);">Sphere</span></h2>
+                </a>
+                <p style="color: #9ca3af; margin-top: 10px;">Join SubSphere today to unlock unlimited movies</p>
+            </div>
+            <form id="signupForm">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" class="form-control" id="username" name="username"
+                        placeholder="Choose a username" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" class="form-control" id="password" name="password"
+                        placeholder="Create a password" required>
+                </div>
+                <div class="form-group">
+                    <label>Role</label>
+                    <select class="form-control" name="role" required>
+                        <option value="USER">User (Subscriber)</option>
+                        <option value="ADMIN">Administrator</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary" style="margin-top: 10px;">Create Account</button>
+            </form>
+            <p style="text-align: center; margin-top: 20px; font-size: 14px; color: var(--text-muted);">
+                Already have an account? <a href="login.html"
+                    style="color: var(--primary); text-decoration: none; font-weight: 500;">Login here</a>
+            </p>
+            <p id="message" style="text-align: center; margin-top: 15px; font-weight: 500;"></p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("signupForm").addEventListener("submit", async function (event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+            const params = new URLSearchParams(formData);
+            const messageEl = document.getElementById("message");
+
+            try {
+                const response = await fetch('/api/auth/signup', {
+                    method: 'POST',
+                    body: params,
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+                });
+
+                if (response.ok) {
+                    messageEl.style.color = "#10b981"; // Success green
+                    messageEl.innerText = "Account created successfully! Redirecting to login...";
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 1500);
+                } else {
+                    messageEl.style.color = "var(--danger)";
+                    messageEl.innerText = await response.text();
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                messageEl.style.color = "var(--danger)";
+                messageEl.innerText = "Network error occurred.";
+            }
+        });
+    </script>
+</body>
+
+</html>

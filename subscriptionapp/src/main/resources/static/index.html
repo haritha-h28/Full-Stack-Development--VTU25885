@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SubSphere OTT - Unlimited Movies & TV Shows</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #1e1b4b;
+            background-image: radial-gradient(circle at top right, rgba(139, 92, 246, 0.15), transparent 40%),
+                              radial-gradient(circle at bottom left, rgba(236, 72, 153, 0.1), transparent 40%);
+            color: #f8fafc;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Navbar enhancements for landing */
+        .landing-nav {
+            background: rgba(30, 27, 75, 0.9);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+        .landing-nav .brand { color: #f8fafc; }
+
+        .hero-banner {
+            position: relative;
+            height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: linear-gradient(rgba(30, 27, 75, 0.8), rgba(30, 27, 75, 1)), 
+                        url('https://images.unsplash.com/photo-1536440136628-849c177e76a1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover;
+            padding: 0 20px;
+            margin-top: 60px;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            z-index: 2;
+        }
+
+        .hero-title {
+            font-size: 56px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            line-height: 1.2;
+            background: linear-gradient(90deg, #fff, #a5b4fc);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 24px;
+            font-weight: 400;
+            margin-bottom: 40px;
+            color: #cbd5e1;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .btn-large {
+            padding: 16px 40px;
+            font-size: 18px;
+            border-radius: 30px;
+            font-weight: 600;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .btn-large:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #3b82f6;
+            color: #3b82f6;
+        }
+
+        .btn-outline:hover {
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        /* Movie Row Section */
+        .content-section {
+            padding: 80px 5%;
+        }
+
+        .section-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            color: #f8fafc;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .movie-scroll-row {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            padding-bottom: 20px;
+        }
+
+        /* Custom Scrollbar for the row */
+        .movie-scroll-row::-webkit-scrollbar {
+            height: 8px;
+        }
+        .movie-scroll-row::-webkit-scrollbar-track {
+            background: #1f2937;
+            border-radius: 4px;
+        }
+        .movie-scroll-row::-webkit-scrollbar-thumb {
+            background: #4b5563;
+            border-radius: 4px;
+        }
+
+        .movie-poster {
+            min-width: 200px;
+            height: 300px;
+            border-radius: 12px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            transition: transform 0.3s;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        }
+
+        .movie-poster:hover {
+            transform: scale(1.05);
+            z-index: 10;
+        }
+
+        .movie-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.9));
+            padding: 20px;
+            border-radius: 0 0 12px 12px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .movie-poster:hover .movie-overlay {
+            opacity: 1;
+        }
+
+        .poster-title {
+            font-weight: 600;
+            font-size: 16px;
+        }
+        
+        .premium-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #fbbf24;
+            color: #000;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar landing-nav">
+        <div class="brand">
+            <i class="fa-solid fa-film" style="color: var(--primary)"></i>
+            Sub<span>Sphere</span> OTT
+        </div>
+        <div class="user-profile" style="display: flex; align-items: center; gap: 15px;">
+            <!-- Let JS decide if they are logged in or not -->
+            <button class="btn btn-outline" style="padding: 8px 20px;" onclick="window.location.href='login.html'" id="navLoginBtn">Sign In</button>
+        </div>
+    </nav>
+
+    <div class="hero-banner">
+        <div class="hero-content">
+            <h1 class="hero-title">Unlimited Movies, TV Shows, and More.</h1>
+            <p class="hero-subtitle">Watch anywhere. Cancel anytime. Dive into your favorite stories instantly.</p>
+            <div class="cta-buttons" id="ctaContainer">
+                <!-- If not logged in, show signup. If logged in, show dashboard link -->
+                <button class="btn btn-primary btn-large" onclick="window.location.href='signup.html'">Get Started</button>
+                <button class="btn btn-outline btn-large" onclick="window.location.href='features.html'">View Plans</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Free & Trending Section -->
+    <div class="content-section">
+        <h2 class="section-title"><i class="fa-solid fa-fire" style="color: #ef4444;"></i> Trending Now</h2>
+        <div class="movie-scroll-row">
+            <!-- Populated dynamically via JS -->
+            <div style="color: #9ca3af; padding: 20px;">
+                <i class="fa-solid fa-spinner fa-spin"></i> Loading latest trending movies...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function loadMovies() {
+            try {
+                const res = await fetch('/api/videos');
+                if (!res.ok) return;
+                const videos = await res.json();
+                const container = document.querySelector('.movie-scroll-row');
+                container.innerHTML = ''; // clear loading state
+                
+                videos.forEach(v => {
+                    const badgeHtml = v.premium ? `<div class="premium-badge"><i class="fa-solid fa-crown"></i> PREMIUM</div>` : '';
+                    const clickAction = v.premium ? `onclick="window.location.href='login.html'"` : `onclick="openModal('${v.title.replace(/'/g, "\\'")}', '${v.trailerUrl}')"`;
+                    
+                    const el = document.createElement('div');
+                    el.className = 'movie-poster';
+                    el.style.backgroundImage = `url('${v.posterUrl}')`;
+                    el.setAttribute('onclick', v.premium ? "window.location.href='login.html'" : `openModal('${v.title.replace(/'/g, "\\'")}', '${v.trailerUrl}')`);
+                    
+                    el.innerHTML = `
+                        ${badgeHtml}
+                        <div class="movie-overlay">
+                            <div class="poster-title">${v.title}</div>
+                        </div>
+                    `;
+                    container.appendChild(el);
+                });
+            } catch (e) {
+                console.error("Failed to load trending movies", e);
+            }
+        }
+
+        // Check if user is already logged in (has localStorage ID)
+        window.onload = () => {
+            loadMovies();
+            const userId = localStorage.getItem('userId');
+            const username = localStorage.getItem('username');
+            
+            if (userId && username) {
+                // Change top right button
+                document.getElementById('navLoginBtn').innerText = 'Go to Dashboard';
+                document.getElementById('navLoginBtn').onclick = () => window.location.href = 'user.html'; // Assuming user, admin has logic. 
+                // Wait, if they are admin we'd probably want them to go to admin.html, but login.html handles that. Let's just point to user.html as a fallback or login for safety routing.
+                // We don't have role saved locally except via backend, so let's redirect to user.html. If they are admin they know to go to admin.html
+                
+                // Change CTA buttons
+                const cta = document.getElementById('ctaContainer');
+                cta.innerHTML = `
+                    <button class="btn btn-primary btn-large" onclick="window.location.href='user.html'">Welcome back, ${username}</button>
+                    <button class="btn btn-outline btn-large" onclick="window.location.href='features.html'">Browse Plans</button>
+                `;
+            }
+        };
+
+        function openModal(title, trailerUrl) {
+            document.getElementById('modalTitle').innerText = 'Now Playing: ' + title;
+            document.getElementById('videoIframe').src = trailerUrl;
+            document.getElementById('videoModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('videoModal').style.display = 'none';
+            document.getElementById('videoIframe').src = '';
+        }
+    </script>
+
+    <!-- Video Modal -->
+    <div id="videoModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; align-items: center; justify-content: center;">
+        <div style="background: var(--bg-card); padding: 20px; border-radius: 12px; width: 80%; max-width: 800px; position: relative;">
+            <button onclick="closeModal()" style="position: absolute; top: -15px; right: -15px; background: #ef4444; color: white; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; font-weight: bold;"><i class="fa-solid fa-xmark"></i></button>
+            <h3 id="modalTitle" style="color: var(--text-main); margin-bottom: 15px; margin-top: 0;"></h3>
+            <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 8px;">
+                <iframe id="videoIframe" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

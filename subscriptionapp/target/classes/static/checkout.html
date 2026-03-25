@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Checkout - SubSphere</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #0b0f19;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .checkout-container {
+            display: flex;
+            gap: 40px;
+            max-width: 900px;
+            width: 100%;
+            padding: 20px;
+        }
+
+        .payment-box, .summary-box {
+            background: rgba(31, 41, 55, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .payment-box {
+            flex: 2;
+        }
+
+        .summary-box {
+            flex: 1;
+            height: fit-content;
+        }
+
+        .form-control {
+            background: rgba(17, 24, 39, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 14px 16px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            width: 100%;
+        }
+
+        .form-control:focus {
+            background: rgba(17, 24, 39, 1);
+            border-color: #3b82f6;
+            outline: none;
+        }
+
+        .cvv-expiry {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn-pay {
+            width: 100%;
+            padding: 16px;
+            font-size: 18px;
+            font-weight: 700;
+            background-color: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-pay:hover {
+            background-color: #2563eb;
+        }
+
+        .summary-title {
+            font-size: 14px;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .summary-total {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 20px;
+            margin-top: 10px;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .secure-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: #10b981;
+            font-size: 14px;
+            margin-top: 30px;
+        }
+
+        .card-icons i {
+            font-size: 24px;
+            color: #9ca3af;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="checkout-container">
+        <!-- Payment Details -->
+        <div class="payment-box">
+            <a href="features.html" style="color: #9ca3af; text-decoration: none; display: inline-block; margin-bottom: 20px;"><i class="fa-solid fa-arrow-left"></i> Back to Plans</a>
+            <h2 style="margin-bottom: 5px;">Secure Checkout</h2>
+            <p style="color: #9ca3af; margin-bottom: 30px;">Enter your payment details to start your subscription.</p>
+
+            <div class="card-icons" style="margin-bottom: 20px;">
+                <i class="fa-brands fa-cc-visa"></i>
+                <i class="fa-brands fa-cc-mastercard"></i>
+                <i class="fa-brands fa-cc-amex"></i>
+                <i class="fa-brands fa-cc-discover"></i>
+            </div>
+
+            <form id="paymentForm">
+                <label style="color: #d1d5db; font-size: 14px; margin-bottom: 8px; display: block;">Cardholder Name</label>
+                <input type="text" class="form-control" placeholder="John Doe" required>
+
+                <label style="color: #d1d5db; font-size: 14px; margin-bottom: 8px; display: block;">Card Number</label>
+                <div style="position: relative;">
+                    <i class="fa-regular fa-credit-card" style="position: absolute; left: 15px; top: 16px; color: #9ca3af;"></i>
+                    <input type="text" class="form-control" placeholder="0000 0000 0000 0000" style="padding-left: 45px;" required maxlength="19">
+                </div>
+
+                <div class="cvv-expiry">
+                    <div style="flex: 1;">
+                        <label style="color: #d1d5db; font-size: 14px; margin-bottom: 8px; display: block;">Expiry Date</label>
+                        <input type="text" class="form-control" placeholder="MM/YY" required maxlength="5">
+                    </div>
+                    <div style="flex: 1;">
+                        <label style="color: #d1d5db; font-size: 14px; margin-bottom: 8px; display: block;">CVV</label>
+                        <input type="password" class="form-control" placeholder="123" required maxlength="4">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-pay" id="payBtn">
+                    <i class="fa-solid fa-lock"></i> Pay $<span id="btnPrice">0.00</span> & Subscribe
+                </button>
+            </form>
+
+            <div class="secure-badge">
+                <i class="fa-solid fa-shield-halved"></i> 256-bit AES Encryption (Mocked)
+            </div>
+        </div>
+
+        <!-- Order Summary -->
+        <div class="summary-box">
+            <div class="summary-title">Order Summary</div>
+            
+            <div class="summary-item">
+                <span id="planName" style="font-weight: 500;">Loading Plan...</span>
+                <span id="planPrice">$0.00</span>
+            </div>
+            
+            <div class="summary-item" style="color: #9ca3af; font-size: 14px;">
+                <span>Tax</span>
+                <span>$0.00</span>
+            </div>
+
+            <div class="summary-item summary-total">
+                <span>Total</span>
+                <span id="totalPrice" style="color: #3b82f6;">$0.00</span>
+            </div>
+
+            <p style="font-size: 12px; color: #9ca3af; margin-top: 20px; text-align: center;">
+                By confirming your purchase, you agree to the SubSphere Terms of Service.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const planId = urlParams.get('planId');
+        const userId = localStorage.getItem('userId');
+
+        if (!userId || !localStorage.getItem('token')) {
+            alert('You must be logged in to access the checkout.');
+            window.location.href = 'login.html';
+        }
+
+        if (!planId) {
+            alert('No plan selected!');
+            window.location.href = 'features.html';
+        }
+
+        async function loadPlanDetails() {
+            try {
+                const res = await fetch('/api/plans');
+                const plans = await res.json();
+                
+                const selectedPlan = plans.find(p => p.id == planId);
+                
+                if (selectedPlan) {
+                    document.getElementById('planName').innerText = selectedPlan.name;
+                    document.getElementById('planPrice').innerText = '$' + selectedPlan.price.toFixed(2);
+                    document.getElementById('totalPrice').innerText = '$' + selectedPlan.price.toFixed(2);
+                    document.getElementById('btnPrice').innerText = selectedPlan.price.toFixed(2);
+                } else {
+                    alert('Invalid Plan ID');
+                    window.location.href = 'features.html';
+                }
+            } catch (err) {
+                console.error("Failed to load plan details", err);
+            }
+        }
+
+        document.getElementById('paymentForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('payBtn');
+            const originalHTML = btn.innerHTML;
+            
+            // Loading state
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
+            btn.style.backgroundColor = '#9ca3af';
+            btn.disabled = true;
+
+            const params = new URLSearchParams();
+            params.append('userId', userId);
+            params.append('planId', planId);
+
+            try {
+                // Simulate network latency for payment gateway mock
+                await new Promise(r => setTimeout(r, 1500));
+
+                const res = await fetch('/api/subscriptions', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'Authorization': 'Bearer ' + localStorage.getItem('token')
+                    },
+                    body: params
+                });
+
+                if (res.ok) {
+                    btn.innerHTML = '<i class="fa-solid fa-check"></i> Payment Successful';
+                    btn.style.backgroundColor = '#10b981'; // Success Green
+                    setTimeout(() => {
+                        window.location.href = 'user.html'; // Direct to dashboard!
+                    }, 1000);
+                } else {
+                    btn.innerHTML = originalHTML;
+                    btn.style.backgroundColor = '#3b82f6';
+                    btn.disabled = false;
+                    alert('Subscription creation failed in backend: ' + await res.text());
+                }
+            } catch (error) {
+                btn.innerHTML = originalHTML;
+                btn.style.backgroundColor = '#3b82f6';
+                btn.disabled = false;
+                alert('Network Error occurred.');
+            }
+        });
+
+        loadPlanDetails();
+    </script>
+</body>
+</html>

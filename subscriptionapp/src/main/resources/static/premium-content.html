@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Feature - SubSphere</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .premium-container {
+            max-width: 800px;
+            margin: 50px auto;
+            text-align: center;
+        }
+
+        .premium-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            display: none;
+            /* hidden until loaded */
+        }
+
+        .premium-header {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .premium-text {
+            font-size: 16px;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .video-placeholder {
+            width: 100%;
+            height: 400px;
+            background: var(--bg-card);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .error-card {
+            background: #fef2f2;
+            border: 1px solid #f87171;
+            border-radius: 16px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            display: none;
+            /* hidden until error */
+        }
+
+        .error-header {
+            font-size: 28px;
+            font-weight: 700;
+            color: #dc2626;
+            margin-bottom: 15px;
+        }
+
+        .loading {
+            font-size: 20px;
+            color: var(--text-main);
+            text-align: center;
+            margin-top: 100px;
+        }
+
+        .plans-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+            text-align: left;
+        }
+
+        .plan-card {
+            background: #ffffff;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            transition: transform 0.3s, border-color 0.3s;
+        }
+
+        .plan-card:hover {
+            transform: translateY(-5px);
+            border-color: #ef4444;
+        }
+
+        .plan-name {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #111827;
+        }
+
+        .plan-price {
+            font-size: 32px;
+            font-weight: 700;
+            color: #ef4444;
+            margin-bottom: 15px;
+        }
+
+        .plan-duration {
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="brand">
+            <i class="fa-solid fa-heart" style="color: var(--primary)"></i>
+            Sub<span>Sphere</span>
+        </div>
+        <div class="nav-links">
+            <a href="user.html">Dashboard</a>
+            <a href="features.html">Plans</a>
+            <a href="#" style="color: var(--primary);">Premium Content</a>
+        </div>
+    </nav>
+
+    <div class="container premium-container">
+        <!-- Loading State -->
+        <div id="loadingState" class="loading">
+            <i class="fa-solid fa-spinner fa-spin" style="color: var(--primary); margin-right: 10px;"></i> Verifying
+            subscription...
+        </div>
+
+        <!-- Success Content -->
+        <div id="premiumContent" class="premium-card">
+            <div class="premium-header">
+                <i class="fa-solid fa-crown" style="color: #fbbf24; margin-right: 10px;"></i> Exclusive Premium Video
+            </div>
+            <p class="premium-text" id="successMsg"></p>
+            
+            <div class="video-placeholder" style="background: transparent; padding: 0;">
+                <iframe width="100%" height="450" src="https://www.youtube.com/embed/8Qn_spdM5Zg?autoplay=1&mute=0" title="Movie Trailer" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="border-radius: 12px; box-shadow: 0 15px 35px rgba(0,0,0,0.4);"></iframe>
+            </div>
+
+            <button class="btn btn-primary" onclick="window.location.href='user.html'">Back to Dashboard</button>
+        </div>
+
+        <!-- Error/404 Content -->
+        <div id="errorContent" class="error-card">
+            <div class="error-header">
+                <i class="fa-solid fa-lock" style="margin-right: 10px;"></i> Premium Access Required
+            </div>
+            <p class="premium-text" id="errorMsg" style="color: #991b1b;"></p>
+            
+            <div id="upgradeSection" style="margin-top: 40px; display: none;">
+                <h3 style="color: #111827; font-size: 22px;">Upgrade to Unlock Premium Movies</h3>
+                <div class="plans-grid" id="premiumPlansList">
+                    <!-- Populated dynamically via JS -->
+                </div>
+            </div>
+
+            <br><br>
+            <a href="user.html" style="color: #ef4444; font-size: 14px; text-decoration: underline;">Back to
+                Dashboard</a>
+        </div>
+    </div>
+
+    <script>
+        async function checkPremiumAccess() {
+            // Get userId mapped from the URL query params or localStorage
+            const urlParams = new URLSearchParams(window.location.search);
+            let userId = urlParams.get('userId') || localStorage.getItem('userId');
+
+            if (!userId) {
+                document.getElementById('loadingState').style.display = 'none';
+                document.getElementById('errorContent').style.display = 'block';
+                document.getElementById('errorMsg').innerText = "You must be logged in to view premium content.";
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/content/premium/' + userId, {
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+                });
+
+                document.getElementById('loadingState').style.display = 'none';
+
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById('premiumContent').style.display = 'block';
+                    document.getElementById('successMsg').innerText = data.message || "Now Playing your Premium Selection.";
+                } else {
+                    const errorData = await (response.status === 403 ? response.json() : { error: "Access Denied: You must have an active Premium Subscription." });
+                    document.getElementById('errorContent').style.display = 'block';
+                    document.getElementById('errorMsg').innerText = errorData.error || "Access Denied.";
+                    // Load 2 premium money packages
+                    loadPremiumUpgrades();
+                }
+            } catch (error) {
+                document.getElementById('loadingState').style.display = 'none';
+                document.getElementById('errorContent').style.display = 'block';
+                document.getElementById('errorMsg').innerText = "Network error. Could not verify subscription.";
+            }
+        }
+
+        async function loadPremiumUpgrades() {
+            try {
+                const res = await fetch('/api/plans');
+                if (!res.ok) return;
+                const plans = await res.json();
+                
+                // Filter out 'Basic' and limit to 2 premium packages
+                const premiumPlans = plans.filter(p => !p.name.toLowerCase().includes('basic')).slice(0, 2);
+                
+                if (premiumPlans.length > 0) {
+                    document.getElementById('upgradeSection').style.display = 'block';
+                    const list = document.getElementById("premiumPlansList");
+                    list.innerHTML = "";
+                    
+                    premiumPlans.forEach(p => {
+                        const div = document.createElement("div");
+                        div.className = "plan-card";
+                        div.innerHTML = `
+                            <div class="plan-name">${p.name}</div>
+                            <div class="plan-price">$${p.price.toFixed(2)}</div>
+                            <div class="plan-duration">${p.durationDays} Days Access</div>
+                            <button class="btn btn-primary" style="background-color: #ef4444;" onclick="subscribe(${p.id})">Subscribe Now</button>
+                        `;
+                        list.appendChild(div);
+                    });
+                }
+            } catch (error) {
+                console.error("Could not load plans", error);
+            }
+        }
+
+        async function subscribe(planId) {
+            const userId = localStorage.getItem('userId');
+            if (!userId) {
+                alert('Please log in first!');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Route to the secure mock payment gateway
+            window.location.href = 'checkout.html?planId=' + planId;
+        }
+
+        window.onload = checkPremiumAccess;
+    </script>
+</body>
+
+</html>

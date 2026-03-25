@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard - SubSphere</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .plans-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .plan-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .plan-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary);
+        }
+
+        .plan-name {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--text-main);
+        }
+
+        .plan-price {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .plan-duration {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 25px;
+        }
+
+        .movie-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .movie-card {
+            background-color: var(--bg-card);
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .movie-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+
+        .movie-poster-placeholder {
+            height: 250px;
+            background: linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255,255,255,0.2);
+            font-size: 40px;
+        }
+
+        .movie-info {
+            padding: 15px;
+            color: var(--text-main);
+        }
+
+        .movie-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .movie-badge {
+            font-size: 12px;
+            background-color: #10b981;
+            padding: 3px 8px;
+            border-radius: 4px;
+            display: inline-block;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="brand">
+            <i class="fa-solid fa-heart" style="color: var(--primary)"></i>
+            Sub<span>Sphere</span>
+        </div>
+        <div class="nav-links">
+            <a href="user.html" style="color: var(--primary);">Dashboard</a>
+            <a href="features.html">Plans</a>
+            <a href="premium-content.html">Premium Content</a>
+            <a href="#" onclick="logout()">Logout</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div style="margin-bottom: 30px; display: flex; align-items: center; justify-content: space-between;">
+            <div>
+                <h2 id="welcomeMsg" style="margin-bottom: 8px;">Welcome, User!</h2>
+                <p style="color: var(--text-muted); display: flex; align-items: center; gap: 10px;">
+                    Manage your subscriptions and explore new plans.
+                    <button onclick="window.location.href='premium-content.html?userId=' + localStorage.getItem('userId')" class="btn" style="padding: 6px 12px; font-size: 14px; background-color: #f59e0b; color: white;">
+                        <i class="fa-solid fa-crown"></i> Go to Premium Hub
+                    </button>
+                </p>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <span style="color: var(--text-muted); font-size: 14px;" id="userIdDisplay">User ID: Loading...</span>
+            </div>
+        </div>
+
+
+
+        <h3>Available Plans</h3>
+        <p style="color: var(--text-muted); margin-bottom: 20px;">Choose a plan that fits your needs.</p>
+        <div class="plans-grid" id="plansList">
+            <!-- Populated by JS -->
+        </div>
+
+        <div class="table-container">
+            <div class="table-header">
+                <h3>My Subscriptions</h3>
+                <button class="btn btn-primary" style="width: auto; padding: 8px 16px;" onclick="loadMySubs()"><i
+                        class="fa-solid fa-rotate-right"></i> Refresh</button>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Plan Name</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="mySubsList">
+                    <!-- Populated by JS -->
+                </tbody>
+            </table>
+        </div>
+
+        <br>
+        <h3>Free Movies</h3>
+        <p style="color: var(--text-muted); margin-bottom: 20px;">Watch a selection of free titles instantly.</p>
+        <div class="movie-grid" id="movieGrid">
+            <!-- Populated dynamically via JS -->
+            <div style="color: var(--text-muted); padding: 10px;">
+                <i class="fa-solid fa-spinner fa-spin"></i> Loading your tailored movie catalog...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function logout() {
+            localStorage.removeItem('userId'); // Clear userId on logout
+            localStorage.removeItem('username'); // Clear username on logout
+            localStorage.removeItem('token'); // Kill session
+            window.location.href = 'login.html';
+        }
+
+        async function loadMovies() {
+            try {
+                const res = await fetch('/api/videos');
+                if (!res.ok) return;
+                const videos = await res.json();
+                
+                const grid = document.getElementById("movieGrid");
+                grid.innerHTML = "";
+                
+                videos.forEach(v => {
+                    const card = document.createElement("div");
+                    card.className = "movie-card";
+                    
+                    if (v.premium) {
+                        card.setAttribute("onclick", "window.location.href='premium-content.html?userId=' + localStorage.getItem('userId')");
+                        card.innerHTML = `
+                            <div class="movie-poster-placeholder" style="background: url('${v.posterUrl}') center/cover;"></div>
+                            <div class="movie-info">
+                                <div class="movie-title">${v.title}</div>
+                                <div class="movie-badge" style="background-color: #f59e0b;"><i class="fa-solid fa-crown"></i> Premium Access Required</div>
+                            </div>
+                        `;
+                    } else {
+                        card.setAttribute("onclick", `openModal('${v.title.replace(/'/g, "\\'")}', '${v.trailerUrl}')`);
+                        card.innerHTML = `
+                            <div class="movie-poster-placeholder" style="background: url('${v.posterUrl}') center/cover;"></div>
+                            <div class="movie-info">
+                                <div class="movie-title">${v.title}</div>
+                                <div class="movie-badge">Free to Watch</div>
+                            </div>
+                        `;
+                    }
+                    grid.appendChild(card);
+                });
+            } catch (e) {
+                console.error("Failed to load movie catalog", e);
+            }
+        }
+
+        async function loadPlans() {
+            const res = await fetch('/api/plans');
+            const plans = await res.json();
+            const list = document.getElementById("plansList");
+            list.innerHTML = "";
+
+            if (plans.length === 0) {
+                list.innerHTML = `<p style="color: var(--text-muted)">No plans available currently.</p>`;
+                return;
+            }
+
+            plans.forEach(p => {
+                const div = document.createElement("div");
+                div.className = "plan-card";
+                div.innerHTML = `
+                    <div class="plan-name">${p.name}</div>
+                    <div class="plan-price">$${p.price.toFixed(2)}</div>
+                    <div class="plan-duration">Duration: ${p.durationDays} Days</div>
+                    <button class="btn btn-primary" onclick="subscribe(${p.id})">Subscribe Now</button>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        async function subscribe(planId) {
+            const userId = localStorage.getItem('userId');
+            if (!userId) {
+                alert('Please log in first!');
+                return;
+            }
+
+            const params = new URLSearchParams();
+            params.append('userId', userId);
+            params.append('planId', planId);
+
+            try {
+                const res = await fetch('/api/subscriptions', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'Authorization': 'Bearer ' + localStorage.getItem('token') 
+                    },
+                    body: params
+                });
+
+                if (res.ok) {
+                    const msg = await res.text();
+
+                    // The backend either says "Subscription Created" 
+                    // or "Subscription Created! New user auto-generated with ID: X"
+                    alert(msg);
+
+                    // If a new ID was generated, let's automatically switch to it
+                    const match = msg.match(/ID: (\d+)/);
+                    if (match) {
+                        localStorage.setItem('userId', match[1]); // Store new ID in localStorage
+                        document.getElementById('userIdDisplay').innerText = `User ID: ${match[1]}`;
+                    }
+
+                    loadMySubs();
+                } else {
+                    alert('Error: ' + await res.text());
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        async function loadMySubs() {
+            const userId = localStorage.getItem('userId');
+            if (!userId) {
+                document.getElementById("mySubsList").innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-muted);">Please log in to view your subscriptions.</td></tr>`;
+                return;
+            }
+
+            const res = await fetch('/api/subscriptions', {
+                headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+            });
+            const subs = await res.json();
+            const mySubs = subs.filter(s => s.user.id == userId);
+
+            const list = document.getElementById("mySubsList");
+            list.innerHTML = "";
+
+            if (mySubs.length === 0) {
+                list.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-muted);">You have no active subscriptions.</td></tr>`;
+                return;
+            }
+
+            mySubs.forEach(s => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td style="font-weight: 500;"><i class="fa-solid fa-heart" style="color: var(--primary); margin-right: 8px;"></i> ${s.plan.name}</td>
+                    <td>${s.startDate}</td>
+                    <td>${s.endDate}</td>
+                    <td><span class="badge ${s.status === 'ACTIVE' ? 'badge-active' : 'badge-inactive'}">${s.status}</span></td>
+                    <td>
+                        ${s.status === 'ACTIVE' ? `<button class="btn btn-warning" style="padding: 4px 8px; font-size: 12px; background-color: #f59e0b; color: white;" onclick="deleteSubscription(${s.id})">
+                            <i class="fa-solid fa-ban"></i> Cancel
+                        </button>` : `<span style="color:var(--text-muted);font-size:12px;">Cancelled</span>`}
+                    </td>
+                `;
+                list.appendChild(tr);
+            });
+        }
+
+        async function deleteSubscription(subId) {
+            if (!confirm('Are you sure you want to cancel this subscription?')) return;
+
+            try {
+                const res = await fetch(`/api/subscriptions/${subId}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+                });
+
+                if (res.ok) {
+                    alert('Subscription cancelled successfully');
+                    loadMySubs(); // Refresh the list
+                } else {
+                    alert('Failed to cancel subscription');
+                }
+            } catch (e) {
+                console.error(e);
+                alert('An error occurred while cancelling the subscription');
+            }
+        }
+
+        const savedUsername = localStorage.getItem('username');
+        if (savedUsername) {
+            document.getElementById('welcomeMsg').innerText = `Welcome, ${savedUsername}!`;
+        }
+
+        const currentUserId = localStorage.getItem('userId');
+        if (currentUserId) {
+            document.getElementById('userIdDisplay').innerText = `User ID: #${currentUserId}`;
+        } else {
+            document.getElementById('userIdDisplay').innerText = `User ID: Not Found`;
+        }
+
+        loadMovies();
+        loadPlans();
+        loadMySubs();
+
+        function openModal(title, trailerUrl) {
+            document.getElementById('modalTitle').innerText = 'Now Playing: ' + title;
+            document.getElementById('videoIframe').src = trailerUrl;
+            document.getElementById('videoModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('videoModal').style.display = 'none';
+            document.getElementById('videoIframe').src = '';
+        }
+    </script>
+
+    <!-- Video Modal -->
+    <div id="videoModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; align-items: center; justify-content: center;">
+        <div style="background: var(--bg-card); padding: 20px; border-radius: 12px; width: 80%; max-width: 800px; position: relative;">
+            <button onclick="closeModal()" style="position: absolute; top: -15px; right: -15px; background: #ef4444; color: white; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; font-weight: bold;"><i class="fa-solid fa-xmark"></i></button>
+            <h3 id="modalTitle" style="color: var(--text-main); margin-bottom: 15px; margin-top: 0;"></h3>
+            <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 8px;">
+                <iframe id="videoIframe" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

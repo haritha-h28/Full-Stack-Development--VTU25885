@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscription Plans - SubSphere OTT</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .hero-section {
+            text-align: center;
+            padding: 60px 20px;
+            background: var(--bg-card);
+            color: var(--text-main);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .hero-title {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, #f472b6, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-desc {
+            font-size: 18px;
+            color: #9ca3af;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .plans-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: -40px auto 40px auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .plan-card {
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            padding: 40px 30px;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .plan-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--primary);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .plan-card.premium-highlight {
+            border-color: #3b82f6;
+        }
+
+        .popular-badge {
+            position: absolute;
+            top: 15px;
+            right: -35px;
+            background-color: #3b82f6;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            padding: 5px 40px;
+            transform: rotate(45deg);
+        }
+
+        .plan-name {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 5px;
+        }
+
+        .plan-price {
+            font-size: 48px;
+            font-weight: 800;
+            color: var(--text-main);
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .plan-price span {
+            font-size: 18px;
+            font-weight: 500;
+            color: var(--text-muted);
+            margin-left: 5px;
+            margin-top: 15px;
+        }
+
+        .plan-duration {
+            font-size: 14px;
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 30px;
+            background: rgba(244, 114, 182, 0.1);
+            padding: 5px 15px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .plan-features {
+            text-align: left;
+            margin-bottom: 30px;
+            flex-grow: 1;
+        }
+
+        .feature-item {
+            margin-bottom: 12px;
+            font-size: 15px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .feature-item i {
+            color: #10b981;
+        }
+
+        .btn-subscribe {
+            width: 100%;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 8px;
+            margin-top: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="brand">
+            <i class="fa-solid fa-film" style="color: var(--primary)"></i>
+            Sub<span>Sphere</span> OTT
+        </div>
+        <div class="nav-links">
+            <a href="user.html">Dashboard</a>
+            <a href="features.html" style="color: var(--primary);">Plans</a>
+            <a href="premium-content.html">Premium Content</a>
+        </div>
+        <div class="user-profile" style="display: flex; align-items: center; gap: 15px;">
+            <button class="btn btn-primary" style="padding: 6px 16px; width: auto;" onclick="handleAuthAction()" id="authBtn">Login</button>
+        </div>
+    </nav>
+
+    <div class="hero-section">
+        <div class="hero-title">Choose Your Entertainment Plan</div>
+        <div class="hero-desc">Unlock unlimited access to blockbuster movies, exclusive series, and premium ad-free content tailored for you.</div>
+    </div>
+
+    <!-- Features Grid (Plans) -->
+    <div class="plans-grid" id="plansList">
+        <div style="text-align:center; width: 100%; grid-column: 1 / -1; color: var(--text-muted); padding: 50px;">
+            <i class="fa-solid fa-spinner fa-spin fa-2x"></i><br><br>Loading Plans...
+        </div>
+    </div>
+
+    <script>
+        function handleAuthAction() {
+            const userId = localStorage.getItem('userId');
+            if (userId) {
+                // Logout
+                localStorage.removeItem('userId');
+                localStorage.removeItem('username');
+                window.location.reload();
+            } else {
+                // Login
+                window.location.href = 'login.html';
+            }
+        }
+
+        function checkAuthStatus() {
+            const userId = localStorage.getItem('userId');
+            const authBtn = document.getElementById('authBtn');
+            if (userId) {
+                authBtn.innerText = 'Logout';
+                authBtn.style.backgroundColor = '#ef4444'; // Red for logout
+                authBtn.style.border = 'none';
+            } else {
+                authBtn.innerText = 'Login / Sign Up';
+                authBtn.style.backgroundColor = 'var(--primary)';
+            }
+        }
+
+        async function loadPlans() {
+            try {
+                const res = await fetch('/api/plans');
+                if (!res.ok) throw new Error("Could not load plans");
+                
+                const plans = await res.json();
+                const list = document.getElementById("plansList");
+                list.innerHTML = "";
+
+                if (plans.length === 0) {
+                    list.innerHTML = `<p style="color: var(--text-muted); text-align:center; width: 100%;">No subscription plans available currently.</p>`;
+                    return;
+                }
+
+                plans.forEach(p => {
+                    const isPremium = !p.name.toLowerCase().includes('basic');
+                    const div = document.createElement("div");
+                    div.className = "plan-card " + (isPremium ? "premium-highlight" : "");
+                    
+                    // Generate OTT-style feature bullets based on plan name/price
+                    let featuresHTML = '';
+                    if (!isPremium) {
+                        featuresHTML = `
+                            <div class="feature-item"><i class="fa-solid fa-check"></i> 720p HD Streaming</div>
+                            <div class="feature-item"><i class="fa-solid fa-check"></i> Watch on 1 Device</div>
+                            <div class="feature-item"><i class="fa-solid fa-check"></i> Access to Free catalog</div>
+                            <div class="feature-item"><i class="fa-solid fa-xmark" style="color: #ef4444;"></i> No Premium Movies</div>
+                            <div class="feature-item"><i class="fa-solid fa-xmark" style="color: #ef4444;"></i> Ad-supported</div>
+                        `;
+                    } else {
+                        featuresHTML = `
+                            <div class="feature-item"><i class="fa-solid fa-check"></i> 4K Ultra HD & HDR</div>
+                            <div class="feature-item"><i class="fa-solid fa-check"></i> Watch on 4 Devices</div>
+                            <div class="feature-item"><i class="fa-solid fa-check"></i> Unlimited Premium Movies</div>
+                            <div class="feature-item"><i class="fa-solid fa-check"></i> Download and watch offline</div>
+                            <div class="feature-item"><i class="fa-solid fa-check"></i> 100% Ad-free streaming</div>
+                        `;
+                    }
+
+                    div.innerHTML = `
+                        ${isPremium ? '<div class="popular-badge">RECOMMENDED</div>' : ''}
+                        <div class="plan-name">${p.name}</div>
+                        <div class="plan-price">$${p.price.toFixed(2)} <span>/${p.durationDays} Days</span></div>
+                        <div class="plan-duration">Full Access</div>
+                        
+                        <div class="plan-features">
+                            ${featuresHTML}
+                        </div>
+                        
+                        <button class="btn btn-primary btn-subscribe" ${isPremium ? 'style="background-color: #3b82f6;"' : ''} onclick="subscribe(${p.id})">
+                            ${isPremium ? 'Upgrade to ' + p.name : 'Choose ' + p.name}
+                        </button>
+                    `;
+                    list.appendChild(div);
+                });
+            } catch (err) {
+                console.error(err);
+                document.getElementById("plansList").innerHTML = `<p style="color: #ef4444; text-align:center; width: 100%;">Error loading plans. Please ensure the backend is running.</p>`;
+            }
+        }
+
+        async function subscribe(planId) {
+            const userId = localStorage.getItem('userId');
+            if (!userId) {
+                alert('Please sign in or create an account first to subscribe to a plan!');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Route to the secure mock payment gateway
+            window.location.href = 'checkout.html?planId=' + planId;
+        }
+
+        window.onload = () => {
+            checkAuthStatus();
+            loadPlans();
+        };
+    </script>
+</body>
+
+</html>
